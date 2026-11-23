@@ -30,7 +30,6 @@ def quit():
     global running
     running = False
 
-
 frame_time = 0.0
 
 def run(start_mode):
