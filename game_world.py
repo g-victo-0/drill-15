@@ -27,6 +27,7 @@ def render():
 
 
 def clear():
+    collision_pairs.clear()
     for layer in world:
         layer.clear()
 def collide(a,b):
@@ -48,10 +49,10 @@ def add_collision_pairs(group,a,b):
     if b:
         collision_pairs[group][1].append(b)
 def handle_collision():
-    for group,pairs in collision_pairs.items():
-        for a in pairs[0]:
+    for group,pairs in collision_pairs.items(): 
+        for a in pairs[0][:]:
             for b in pairs[1][:]:
-                if collide(a,b):
+                 if a in pairs[0] and b in pairs[1] and collide(a, b):
                     a.handle_collision(group, b)
                     b.handle_collision(group, a)
 

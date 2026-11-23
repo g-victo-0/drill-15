@@ -2,6 +2,7 @@ import random
 
 from pico2d import load_image, draw_rectangle, clamp
 
+import ball
 import game_framework
 import game_world
 
@@ -32,6 +33,8 @@ class Zombie:
     def __init__(self):
         self.load_images()
         self.x, self.y = random.randint(MIN_X, MAX_X), 150
+        self.size = 200
+        self.hit_count = 0
         self.frame = random.randint(0, 9)
         self.dir = random.choice([-1, 1])
 
@@ -48,10 +51,20 @@ class Zombie:
     def draw(self):
         image = Zombie.images['Walk'][int(self.frame)]
         if self.dir < 0:
-            image.composite_draw(0, 'h', self.x, self.y, 200, 200)
+            image.composite_draw(0, 'h', self.x, self.y, self.size, self.size)
         else:
-            image.draw(self.x, self.y, 200, 200)
+            image.draw(self.x, self.y, self.size, self.size)
         draw_rectangle(*self.get_bb())
 
     def get_bb(self):
-        return self.x - 100, self.y - 100, self.x + 100, self.y + 100
+        half = self.size /2
+        return self.x - half, self.y - half, self.x + half, self.y + half
+
+    def handle_collision(self,group,other):
+        if group == 'ball:zombie':
+            self.hit_count += 1
+            if self.hit_count == 1:
+                self.y -= self.size/4
+                self.size /= 2
+            elif self.hit_count == 2:
+                game_world.remove_object(self)

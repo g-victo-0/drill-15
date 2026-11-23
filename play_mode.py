@@ -28,19 +28,21 @@ def init():
     global boy
     global balls
     balls = [Ball(random.randint(100, 1600-100), 60, 0) for _ in range(30)]
-    
+    zombies = [Zombie() for _ in range(4)]
+    game_world.add_objects(zombies,1)
     grass = Grass()
     boy = Boy()
     game_world.add_oject(boy)
-    game_world.add_objects(balls, 1)  
     game_world.add_oject(grass, 0)
-    zombies = [Zombie() for _ in range(4)]
-    game_world.add_objects(zombies,1)
+    game_world.add_objects(balls, 1)  
+    game_world.add_collision_pairs('boy:ball',boy,None)
+    game_world.add_collision_pairs('boy:zombie',boy,None)
     for zombie in zombies:
-        game_world.add_collision_pairs("ball:zombie",None,zombie)
-    game_world.add_collision_pairs("boy:ball",boy,None)
+            game_world.add_collision_pairs('ball:zombie',None,zombie)
+    for zombie in zombies:
+            game_world.add_collision_pairs('boy:zombie',None,boy)
     for ball in balls:
-        game_world.add_collision_pairs("boy:ball",None,ball)
+        game_world.add_collision_pairs('boy:ball',None,ball)
 
 
 def pause():
